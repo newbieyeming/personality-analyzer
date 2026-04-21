@@ -358,7 +358,7 @@
       </header>
 
       <!-- Input Section -->
-      <div class="space-y-6">
+      <div id="inputSection" class="space-y-6">
         
         <!-- Multi-Image Upload -->
         <div class="card">
@@ -499,8 +499,8 @@
     </footer>
   </div>
 
-  <!-- Tesseract.js CDN -->
-  <script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
+  <!-- Tesseract.js CDN (使用更稳定的版本) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   
   <script>
     // ========== Environment Detection ==========
@@ -683,6 +683,7 @@
       resultPanel.classList.add('hidden');
       progressPanel.classList.add('hidden');
       errorMsg.classList.add('hidden');
+      inputSection.classList.remove('hidden'); // 显示输入区域
       fileInput.value = '';
     }
 
@@ -711,12 +712,18 @@
             document.getElementById('ocrProgress').style.width = `${progress}%`;
             
             try {
-              const { data } = await Tesseract.recognize(
-                imagePreviews[i],
-                'chi_sim+eng',
-                { logger: () => {} }
-              );
+              // 使用 v4 API
+              const worker = await Tesseract.createWorker('chi_sim+eng', 1, {
+                logger: m => {
+                  if (m.status === 'recognizing text') {
+                    const partialProgress = Math.round(m.progress * 100);
+                    document.getElementById('ocrProgress').style.width = `${progress - 10 + partialProgress * 0.1}%`;
+                  }
+                }
+              });
+              const { data } = await worker.recognize(imagePreviews[i]);
               ocrText += data.text + '\n';
+              await worker.terminate();
             } catch (err) {
               console.warn(`第 ${i + 1} 张图片识别失败`);
             }
@@ -750,7 +757,9 @@
         const persona = analyzeContent(combinedText);
         currentResult = persona;
 
+        // 隐藏输入区域，直接在原位置显示结果
         progressPanel.classList.add('hidden');
+        inputSection.classList.add('hidden');
         showResult(persona);
 
       } catch (err) {
