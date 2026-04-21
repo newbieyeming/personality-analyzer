@@ -499,8 +499,8 @@
     </footer>
   </div>
 
-  <!-- Tesseract.js CDN (使用更稳定的版本) -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <!-- Tesseract.js CDN -->
+  <script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
   
   <script>
     // ========== Environment Detection ==========
@@ -712,20 +712,21 @@
             document.getElementById('ocrProgress').style.width = `${progress}%`;
             
             try {
-              // 使用 v4 API
-              const worker = await Tesseract.createWorker('chi_sim+eng', 1, {
-                logger: m => {
-                  if (m.status === 'recognizing text') {
-                    const partialProgress = Math.round(m.progress * 100);
-                    document.getElementById('ocrProgress').style.width = `${progress - 10 + partialProgress * 0.1}%`;
+              // 使用 v5 API recognize（简洁方式）
+              const result = await Tesseract.recognize(
+                imagePreviews[i],
+                'chi_sim',
+                { 
+                  logger: m => {
+                    if (m.status === 'recognizing text') {
+                      document.getElementById('ocrProgress').style.width = `${Math.round(progress * 0.8 + m.progress * 20)}%`;
+                    }
                   }
                 }
-              });
-              const { data } = await worker.recognize(imagePreviews[i]);
-              ocrText += data.text + '\n';
-              await worker.terminate();
+              );
+              ocrText += result.data.text + '\n';
             } catch (err) {
-              console.warn(`第 ${i + 1} 张图片识别失败`);
+              console.warn(`第 ${i + 1} 张图片识别失败:`, err.message);
             }
           }
           
