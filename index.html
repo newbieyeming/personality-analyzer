@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>人物分析仪 - 发现TA的另一面</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: #0F0F1A;
+      color: #ffffff;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Layout */
+    .min-h-screen { min-height: 100vh; }
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+    .overflow-hidden { overflow: hidden; }
+    .pointer-events-none { pointer-events: none; }
+    .z-10 { z-index: 10; }
+    .pb-8 { padding-bottom: 2rem; }
+    .max-w-3xl { max-width: 48rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .mb-10 { margin-bottom: 2.5rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-8 { margin-top: 2rem; }
+    .mt-16 { margin-top: 4rem; }
+    .space-y-6 > * + * { margin-top: 1.5rem; }
+    .text-center { text-align: center; }
+    .flex { display: flex; }
+    .inline-flex { display: inline-flex; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .w-full { width: 100%; }
+    .w-14 { width: 3.5rem; }
+    .h-14 { height: 3.5rem; }
+    .text-4xl { font-size: 2.25rem; line-height: 1; }
+    .text-3xl { font-size: 1.875rem; line-height: 1; }
+    .text-8xl { font-size: 6rem; line-height: 1; }
+    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .font-medium { font-weight: 500; }
+    .font-bold { font-weight: 700; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .p-4 { padding: 1rem; }
+    .p-6 { padding: 1.5rem; }
+    .p-8 { padding: 2rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .px-10 { padding-left: 2.5rem; padding-right: 2.5rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .cursor-pointer { cursor: pointer; }
+    .cursor-not-allowed { cursor: not-allowed; }
+    .hidden { display: none !important; }
+    .grid { display: grid; }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .gap-3 { gap: 0.75rem; }
+    .aspect-square { aspect-ratio: 1 / 1; }
+    .object-cover { object-fit: cover; }
+    .resize-none { resize: none; }
+    .whitespace-nowrap { white-space: nowrap; }
+    .leading-relaxed { line-height: 1.625; }
+    .transition-all { transition: all 0.15s ease-in-out; }
+    .duration-300 { transition-duration: 0.3s; }
+    .opacity-0 { opacity: 0; }
+    .opacity-50 { opacity: 0.5; }
+    .transform { transform: var(--tw-transform); }
+    .translate-x-1\/2 { --tw-translate-x: 50%; }
+    .text-white { color: #ffffff; }
+    .text-gray-300 { color: #d1d5db; }
+    .text-gray-400 { color: #9ca3af; }
+    .text-gray-500 { color: #6b7280; }
+    .text-gray-600 { color: #4b5563; }
+    .text-red-400 { color: #f87171; }
+    .text-primary { color: #6366f1; }
+    .text-secondary { color: #ec4899; }
+    
+    /* Gradient Text */
+    .gradient-text {
+      background: linear-gradient(135deg, #6366F1, #EC4899, #F59E0B);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .float-animation { animation: float 3s ease-in-out infinite; }
+    
+    @keyframes reveal {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .reveal-animation { animation: reveal 0.8s ease-out forwards; }
+    
+    /* Glow Effect */
+    .glow-effect {
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.3), 0 0 60px rgba(236, 72, 153, 0.2);
+    }
+    
+    /* Custom Styles */
+    .card {
+      background: rgba(26, 26, 46, 0.5);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .upload-zone {
+      position: relative;
+      border: 2px dashed #4b5563;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+      background: transparent;
+    }
+    
+    .upload-zone:hover {
+      border-color: rgba(99, 102, 241, 0.5);
+      background: rgba(99, 102, 241, 0.03);
+    }
+    
+    .upload-zone.drag-over {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.1);
+    }
+    
+    .upload-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: 0.75rem;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    
+    .upload-icon {
+      font-size: 28px;
+    }
+    
+    .custom-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(55, 65, 81, 0.5);
+      background: rgba(15, 15, 26, 0.8);
+      color: #e5e7eb;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      resize: none;
+      font-family: inherit;
+    }
+    
+    .custom-textarea::placeholder {
+      color: #6b7280;
+    }
+    
+    .custom-textarea:focus {
+      outline: none;
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+    
+    .analyze-btn {
+      padding: 1rem 2.5rem;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+      min-width: 200px;
+    }
+    
+    .analyze-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #4b5563 !important;
+    }
+    
+    .analyze-btn:not(:disabled) {
+      background: linear-gradient(90deg, #6366f1, #ec4899, #10b981);
+      background-size: 200% 100%;
+      animation: gradient-shift 3s ease infinite;
+    }
+    
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .progress-container {
+      flex: 1;
+      height: 8px;
+      background: rgba(55, 65, 81, 0.5);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #ec4899);
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+    
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      width: 100%;
+    }
+    
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      background: rgba(26, 26, 46, 0.8);
+    }
+    
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .preview-item:hover .remove-btn {
+      opacity: 1;
+    }
+    
+    .remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 24px;
+      height: 24px;
+      background: rgba(239, 68, 68, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      cursor: pointer;
+      font-size: 12px;
+      color: white;
+    }
+    
+    .trait-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .action-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 0.875rem;
+    }
+    
+    .action-btn-secondary {
+      background: rgba(26, 26, 46, 0.8);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .action-btn-secondary:hover {
+      background: rgba(26, 26, 46, 1);
+    }
+    
+    .action-btn-outline {
+      background: transparent;
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, 0.5);
+    }
+    
+    .action-btn-outline:hover {
+      background: rgba(99, 102, 241, 0.1);
+    }
+    
+    /* Background Effects */
+    .bg-surface\/50 { background: rgba(26, 26, 46, 0.5); }
+    .bg-surface\/80 { background: rgba(26, 26, 46, 0.8); }
+    .bg-primary\/20 { background: rgba(99, 102, 241, 0.2); }
+    .bg-secondary\/20 { background: rgba(236, 72, 153, 0.2); }
+    .bg-red-500\/20 { background: rgba(239, 68, 68, 0.2); }
+    .bg-gradient-to-br { background: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+    .bg-gradient-to-tl { background: linear-gradient(to top left, var(--tw-gradient-stops)); }
+    
+    .border-white\/5 { border-color: rgba(255, 255, 255, 0.05); }
+    .border-white\/10 { border-color: rgba(255, 255, 255, 0.1); }
+    .border-red-500\/50 { border-color: rgba(239, 68, 68, 0.5); }
+    
+    .blur-2xl { filter: blur(40px); }
+    .blur-3xl { filter: blur(64px); }
+    .backdrop-blur-sm { backdrop-filter: blur(4px); }
+    
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+  <div id="app" class="min-h-screen relative overflow-hidden pb-8">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-3xl mx-auto px-4 py-8">
+      <!-- Header -->
+      <header class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 mb-4">
+          <span class="text-4xl">⭐</span>
+          <h1 class="text-4xl gradient-text" style="font-weight: 700;">人物分析仪</h1>
+          <span class="text-4xl">⭐</span>
+        </div>
+        <p class="text-gray-400 text-sm">上传聊天记录或描述人物，发现TA的另一面 ✨</p>
+      </header>
+
+      <!-- Input Section -->
+      <div class="space-y-6">
+        
+        <!-- Multi-Image Upload -->
+        <div class="card">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-medium text-gray-300 flex items-center gap-2">
+              <span>📷</span>
+              聊天截图 (可选)
+            </h3>
+            <span id="imageCount" class="text-sm text-gray-500">0 张</span>
+          </div>
+          
+          <div id="dropZone" class="upload-zone p-4">
+            <!-- Upload Prompt (shown when no images) -->
+            <div id="uploadPrompt" class="flex flex-col items-center justify-center cursor-pointer py-4">
+              <div class="upload-icon-wrapper">
+                <span class="upload-icon">⬆️</span>
+              </div>
+              <p class="text-gray-300 mb-1 font-medium">点击添加聊天截图</p>
+              <p class="text-sm text-gray-500">支持多张 · JPG, PNG, WEBP</p>
+            </div>
+            
+            <!-- Preview Grid (shown when has images) -->
+            <div id="previewGrid" class="preview-grid hidden">
+            </div>
+            
+            <!-- Hidden File Input -->
+            <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/bmp" multiple style="display: none;">
+          </div>
+        </div>
+
+        <!-- Text Input -->
+        <div class="card">
+          <h3 class="font-medium text-gray-300 flex items-center gap-2 mb-4">
+            <span>✏️</span>
+            补充描述 (可选)
+          </h3>
+          <textarea 
+            id="descriptionInput" 
+            class="custom-textarea"
+            placeholder="描述一下这个人的特点，比如：
+• 经常发表情包，话很多
+• 喜欢分享日常小事
+• 说话很温柔体贴..."
+          ></textarea>
+          <p class="text-xs text-gray-500 mt-2">描述越详细，分析越准确 ~</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="card">
+          <div class="flex items-center gap-3">
+            <div class="progress-container">
+              <div id="inputProgress" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <span id="inputStatus" class="text-sm text-gray-400 whitespace-nowrap">等待输入...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="mt-6 text-center">
+        <button id="analyzeBtn" disabled class="analyze-btn">
+          <span>🔍</span>
+          <span id="analyzeBtnText">开始分析</span>
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <div id="errorMsg" class="hidden mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-400 text-sm text-center"></div>
+
+      <!-- Progress Panel -->
+      <div id="progressPanel" class="hidden mt-8 p-6 bg-surface/80 backdrop-blur-sm rounded-2xl border border-white/10">
+        <div id="progressText" class="text-center mb-4 text-gray-400">正在处理中...</div>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-surface/50 flex items-center justify-center">
+            <span>📄</span>
+          </div>
+          <div class="progress-container">
+            <div id="ocrProgress" class="progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Poster -->
+      <div id="resultPanel" class="hidden mt-8">
+        <div class="reveal-animation">
+          <div id="poster" class="relative overflow-hidden rounded-3xl glow-effect" style="background: linear-gradient(145deg, #1A1A2E 0%, #0F0F1A 50%, #1A1A2E 100%)">
+            <div class="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-primary/30 to-transparent rounded-full blur-2xl"></div>
+            <div class="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-secondary/30 to-transparent rounded-full blur-2xl"></div>
+            
+            <div class="relative p-8">
+              <div class="text-center mb-6">
+                <div class="inline-flex items-center gap-2 mb-2">
+                  <span>⭐</span>
+                  <span class="text-gray-400 text-sm">人物分析报告</span>
+                  <span>⭐</span>
+                </div>
+                <h2 id="resultNickname" class="text-3xl gradient-text" style="font-weight: 700;"></h2>
+              </div>
+
+              <div class="relative w-48 h-48 mx-auto mb-8">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-full blur-xl"></div>
+                <div class="relative w-full h-full rounded-full bg-gradient-to-br from-surface/80 to-background p-2 flex items-center justify-center">
+                  <div id="animalIcon" class="text-8xl float-animation"></div>
+                </div>
+                <div id="animalBadge" class="absolute -bottom-2 left-1/2 transform translate-x-1/2 px-4 py-1 bg-surface/80 rounded-full border border-white/10 text-sm text-gray-400 whitespace-nowrap"></div>
+              </div>
+
+              <div class="bg-surface/50 rounded-2xl p-6 mb-6 border border-white/5">
+                <p id="resultDescription" class="text-gray-300 leading-relaxed text-center"></p>
+              </div>
+
+              <div id="traitsContainer" class="flex flex-wrap justify-center gap-3">
+              </div>
+
+              <div class="mt-8 text-center">
+                <p class="text-xs text-gray-600">微信人设图生成器 · 仅供娱乐</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4 mt-6">
+          <button id="downloadBtn" class="action-btn action-btn-secondary">
+            <span>⬇️</span>
+            保存图片
+          </button>
+          <button id="resetBtn" class="action-btn action-btn-outline">
+            <span>🔄</span>
+            重新分析
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 text-center text-gray-500 text-xs">
+      <p>本工具仅供娱乐 · 所有数据仅在本地处理</p>
+    </footer>
+  </div>
+
+  <!-- Tesseract.js CDN -->
+  <script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
+  
+  <script>
+    // ========== Environment Detection ==========
+    const isDouyin = typeof tt !== 'undefined'; // 抖音小程序环境
+    const isWechat = typeof wx !== 'undefined' && typeof wx.chooseImage !== 'undefined'; // 微信环境
+    const isWeb = !isDouyin && !isWechat; // 普通网页环境
+    
+    console.log('运行环境:', isDouyin ? '抖音小程序' : (isWechat ? '微信' : '网页'));
+
+    // ========== Animal Data ==========
+    const ANIMALS = {
+      '兔子': { emoji: '🐰', color: '#F48FB1' },
+      '猫头鹰': { emoji: '🦉', color: '#8B7355' },
+      '金毛犬': { emoji: '🐕', color: '#FFD54F' },
+      '金毛': { emoji: '🐕', color: '#FFD54F' },
+      '猫': { emoji: '🐱', color: '#90A4AE' },
+      '狐狸': { emoji: '🦊', color: '#FF7043' },
+      '考拉': { emoji: '🐨', color: '#90A4AE' },
+      '仓鼠': { emoji: '🐹', color: '#FFCC80' },
+      '默认': { emoji: '🦄', color: '#CE93D8' }
+    };
+
+    // ========== Persona Templates ==========
+    const PERSONAS = [
+      { nickname: '社恐小甜心', animal: '兔子', description: '表面高冷内心柔软的可爱生物，嘴上说着"我没事"，心里其实很在意。社交场合容易紧张，但一旦熟悉起来就会变成黏人的小跟班。会偷偷记下朋友喜欢的食物，然后在不经意间给你惊喜。', traits: ['嘴硬心软', '细节控', '慢热型', '小天使', '容易脸红'] },
+      { nickname: '气氛破坏王', animal: '猫头鹰', description: '总是能在最欢乐的时刻说出最清醒的话，被朋友称为"人间真实"。看似冷漠实则热心，嘴上嫌弃但身体很诚实。思维跳脱，说话跳Tone，让人猜不透下一秒会冒出什么金句。', traits: ['人间清醒', '毒舌温柔', '思维跳跃', '冷幽默', '洞察力强'] },
+      { nickname: '暖心小太阳', animal: '金毛犬', description: '永远充满活力的大型犬系朋友，笑声魔性且具有感染力。朋友难过时第一个出现，默默守护从不求回报。对世界保持好奇，喜欢探索新事物，是朋友圈里的开心果和情感支柱。', traits: ['热情洋溢', '治愈系', '可靠担当', '分享欲强', '情感充沛'] },
+      { nickname: '神秘观察者', animal: '猫', description: '优雅神秘的喵星人，日常爱好是观察人类。话不多但每句都有分量，懂得很多却不轻易显摆。喜欢独处但不孤独，内心戏丰富，表面波澜不惊实则内心戏超多。', traits: ['高冷神秘', '内心戏精', '独立自主', '一针见血', '品味极佳'] },
+      { nickname: '话痨小天才', animal: '猫头鹰', description: '微信消息永远秒回，打字速度快到让人怀疑是不是有分身。分享欲爆棚，看到有趣的东西第一反应是转发给朋友。脑回路清奇，聊天记录里全是表情包和沙雕日常。', traits: ['秒回达人', '表情包大户', '沙雕本雕', '脑洞清奇', '社交蝴蝶'] },
+      { nickname: '玻璃心小公举', animal: '仓鼠', description: '软萌可爱的团子，表面是个小可爱，实则内心敏感细腻。容易被戳中泪点，但哭完又是一条好汉。记仇但记不久，对朋友掏心掏肺，是需要被好好宠爱的小宝贝。', traits: ['软萌可爱', '玻璃心', '记仇三天', '重感情', '容易感动'] },
+      { nickname: '逻辑怪本怪', animal: '狐狸', description: '聪明伶俐的狐狸系朋友，思维缜密逻辑清晰。善于发现问题漏洞，说话做事都很有条理。嘴上不吃亏，但其实心里明镜似的。看透了很多事，却选择难得糊涂。', traits: ['智商担当', '逻辑满分', '嘴上不饶人', '心里门清', '偶尔腹黑'] },
+      { nickname: '佛系养生家', animal: '考拉', description: '随遇而安的佛系生物，能躺着绝不坐着。看起来懒洋洋的，但对朋友的事情特别上心。喜欢简单的生活方式，不喜欢复杂的人际关系，是朋友圈里的清流和定海神针。', traits: ['佛系心态', '懒得计较', '稳定输出', '简单生活', '大智若愚'] }
+    ];
+
+    // ========== State ==========
+    let imageFiles = [];
+    let imagePreviews = [];
+    let currentResult = null;
+
+    // ========== DOM Elements ==========
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadPrompt = document.getElementById('uploadPrompt');
+    const previewGrid = document.getElementById('previewGrid');
+    const imageCount = document.getElementById('imageCount');
+    const descriptionInput = document.getElementById('descriptionInput');
+    const inputProgress = document.getElementById('inputProgress');
+    const inputStatus = document.getElementById('inputStatus');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const analyzeBtnText = document.getElementById('analyzeBtnText');
+    const progressPanel = document.getElementById('progressPanel');
+    const resultPanel = document.getElementById('resultPanel');
+    const errorMsg = document.getElementById('errorMsg');
+
+    // ========== Event Listeners ==========
+    fileInput.addEventListener('change', handleFileSelect);
+    descriptionInput.addEventListener('input', updateInputStatus);
+    analyzeBtn.addEventListener('click', handleAnalyze);
+    document.getElementById('resetBtn').addEventListener('click', handleReset);
+    document.getElementById('downloadBtn').addEventListener('click', handleDownload);
+
+    // ========== Upload Area Click Handler ==========
+    // 点击上传区域打开文件选择
+    dropZone.addEventListener('click', function(e) {
+      // 如果点击的是移除按钮，不触发上传
+      if (e.target.classList.contains('remove-btn')) return;
+      
+      // 如果已经有图片，点击可能想添加更多
+      if (imageFiles.length > 0) {
+        // 打开文件选择器添加更多图片
+        fileInput.click();
+        return;
+      }
+      
+      // 如果没有图片，打开文件选择器
+      fileInput.click();
+    });
+
+    // 拖拽事件
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      if (e.dataTransfer && e.dataTransfer.files) {
+        handleFiles(e.dataTransfer.files);
+      }
+    });
+
+    // ========== File Handling ==========
+    function isImageFile(file) {
+      if (!file) return false;
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
+      if (validTypes.includes(file.type)) return true;
+      const ext = file.name.toLowerCase().split('.').pop();
+      return ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'].includes(ext);
+    }
+
+    function handleFileSelect(e) {
+      handleFiles(e.target.files);
+    }
+
+    function handleFiles(files) {
+      const newFiles = Array.from(files).filter(isImageFile);
+      if (newFiles.length === 0) return;
+
+      newFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          imageFiles.push(file);
+          imagePreviews.push(e.target.result);
+          updatePreviewGrid();
+          updateInputStatus();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function updatePreviewGrid() {
+      if (imageFiles.length === 0) {
+        previewGrid.classList.add('hidden');
+        uploadPrompt.classList.remove('hidden');
+        dropZone.style.minHeight = '160px';
+      } else {
+        previewGrid.classList.remove('hidden');
+        uploadPrompt.classList.add('hidden');
+        dropZone.style.minHeight = 'auto';
+        
+        previewGrid.innerHTML = imagePreviews.map((src, index) => `
+          <div class="preview-item">
+            <img src="${src}" alt="预览 ${index + 1}">
+            <button type="button" onclick="removeImage(${index})" class="remove-btn">✕</button>
+          </div>
+        `).join('');
+      }
+      
+      imageCount.textContent = `${imageFiles.length} 张`;
+    }
+
+    window.removeImage = function(index) {
+      imageFiles.splice(index, 1);
+      imagePreviews.splice(index, 1);
+      updatePreviewGrid();
+      updateInputStatus();
+    }
+
+    function updateInputStatus() {
+      const hasImages = imageFiles.length > 0;
+      const hasText = descriptionInput.value.trim().length > 0;
+      const progress = hasImages ? (hasText ? 100 : 50) : (hasText ? 100 : 0);
+      
+      inputProgress.style.width = `${progress}%`;
+      
+      if (hasImages && hasText) {
+        inputStatus.textContent = '准备就绪 ✨';
+        analyzeBtn.disabled = false;
+      } else if (hasImages || hasText) {
+        inputStatus.textContent = hasImages ? '可添加更多描述 ↑' : '可添加截图 ↑';
+        analyzeBtn.disabled = false;
+      } else {
+        inputStatus.textContent = '等待输入...';
+        analyzeBtn.disabled = true;
+      }
+    }
+
+    function handleReset() {
+      imageFiles = [];
+      imagePreviews = [];
+      descriptionInput.value = '';
+      updatePreviewGrid();
+      updateInputStatus();
+      resultPanel.classList.add('hidden');
+      progressPanel.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+      fileInput.value = '';
+    }
+
+    async function handleAnalyze() {
+      const textInput = descriptionInput.value.trim();
+      const hasImages = imageFiles.length > 0;
+      const hasText = textInput.length > 0;
+
+      if (!hasImages && !hasText) return;
+
+      errorMsg.classList.add('hidden');
+      progressPanel.classList.remove('hidden');
+      resultPanel.classList.add('hidden');
+      analyzeBtn.disabled = true;
+
+      let ocrText = '';
+      let combinedText = textInput;
+
+      try {
+        // OCR if images exist
+        if (hasImages && typeof Tesseract !== 'undefined') {
+          document.getElementById('progressText').textContent = `正在识别 ${imageFiles.length} 张截图...`;
+          
+          for (let i = 0; i < imageFiles.length; i++) {
+            const progress = ((i + 1) / imageFiles.length) * 100;
+            document.getElementById('ocrProgress').style.width = `${progress}%`;
+            
+            try {
+              const { data } = await Tesseract.recognize(
+                imagePreviews[i],
+                'chi_sim+eng',
+                { logger: () => {} }
+              );
+              ocrText += data.text + '\n';
+            } catch (err) {
+              console.warn(`第 ${i + 1} 张图片识别失败`);
+            }
+          }
+          
+          // 即使识别内容少，也添加到分析文本中
+          if (ocrText.trim().length > 0) {
+            combinedText = [textInput, ocrText].filter(t => t.trim()).join('\n\n--- 聊天记录 ---\n\n');
+          }
+        }
+
+        // 即使没有任何文本，只要有图片就生成随机分析
+        // 或者使用默认的输入状态作为分析依据
+        if (combinedText.trim().length < 2 && !hasImages) {
+          throw new Error('请添加聊天截图或描述文字');
+        }
+        
+        // 如果 combinedText 太短但有图片，使用图片文件名或固定前缀来增加内容
+        if (combinedText.trim().length < 5 && hasImages) {
+          combinedText = hasText ? combinedText : '聊天截图分析';
+        }
+
+        // Simulate AI analysis
+        document.getElementById('progressText').textContent = '正在分析性格特征...';
+        await new Promise(r => setTimeout(r, 1000));
+        
+        document.getElementById('progressText').textContent = '正在生成结果...';
+        await new Promise(r => setTimeout(r, 600));
+
+        // Get persona based on content analysis
+        const persona = analyzeContent(combinedText);
+        currentResult = persona;
+
+        progressPanel.classList.add('hidden');
+        showResult(persona);
+
+      } catch (err) {
+        errorMsg.textContent = err.message || '分析过程出错，请重试';
+        errorMsg.classList.remove('hidden');
+        progressPanel.classList.add('hidden');
+      }
+
+      analyzeBtn.disabled = false;
+    }
+
+    function analyzeContent(text) {
+      let scores = PERSONAS.map((p, i) => ({ index: i, score: 0 }));
+
+      // Keywords matching
+      if (/表情|哈哈|哈哈哈|笑死|沙雕|搞笑/.test(text)) {
+        scores = scores.map(s => s.index === 4 || s.index === 1 ? {...s, score: s.score + 3} : s);
+      }
+      if (/温柔|体贴|暖心|关心/.test(text)) {
+        scores = scores.map(s => s.index === 2 ? {...s, score: s.score + 4} : s);
+      }
+      if (/高冷|神秘|话少|安静/.test(text)) {
+        scores = scores.map(s => s.index === 3 ? {...s, score: s.score + 4} : s);
+      }
+      if (/敏感|玻璃心|容易哭|容易感动/.test(text)) {
+        scores = scores.map(s => s.index === 5 ? {...s, score: s.score + 4} : s);
+      }
+      if (/聪明|逻辑|理性|分析/.test(text)) {
+        scores = scores.map(s => s.index === 6 ? {...s, score: s.score + 3} : s);
+      }
+      if (/懒|佛系|躺平|随性/.test(text)) {
+        scores = scores.map(s => s.index === 7 ? {...s, score: s.score + 4} : s);
+      }
+      if (/社恐|害羞|内向|紧张/.test(text)) {
+        scores = scores.map(s => s.index === 0 ? {...s, score: s.score + 4} : s);
+      }
+
+      // Add randomness
+      scores = scores.map(s => ({...s, score: s.score + Math.random() * 3}));
+      
+      // Sort and pick
+      scores.sort((a, b) => b.score - a.score);
+      return PERSONAS[scores[0].index];
+    }
+
+    function showResult(persona) {
+      const animal = ANIMALS[persona.animal] || ANIMALS['默认'];
+      
+      document.getElementById('resultNickname').textContent = `「${persona.nickname}」`;
+      document.getElementById('animalIcon').textContent = animal.emoji;
+      document.getElementById('animalBadge').textContent = persona.animal;
+      document.getElementById('resultDescription').textContent = persona.description;
+
+      const traitsContainer = document.getElementById('traitsContainer');
+      traitsContainer.innerHTML = '';
+      persona.traits.forEach((trait, i) => {
+        const tag = document.createElement('span');
+        tag.className = 'trait-tag';
+        tag.style.background = `linear-gradient(135deg, ${i % 2 === 0 ? '#6366F1' : '#EC4899'}20, ${i % 2 === 0 ? '#6366F1' : '#EC4899'}40)`;
+        tag.style.border = `1px solid ${i % 2 === 0 ? '#6366F1' : '#EC4899'}50`;
+        tag.style.color = i % 2 === 0 ? '#A5B4FC' : '#F9A8D4';
+        tag.textContent = `✦ ${trait}`;
+        traitsContainer.appendChild(tag);
+      });
+
+      resultPanel.classList.remove('hidden');
+      resultPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function handleDownload() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = 600;
+      canvas.height = 800;
+      
+      // Background
+      const gradient = ctx.createLinearGradient(0, 0, 600, 800);
+      gradient.addColorStop(0, '#1A1A2E');
+      gradient.addColorStop(0.5, '#0F0F1A');
+      gradient.addColorStop(1, '#1A1A2E');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 600, 800);
+
+      // Title
+      ctx.fillStyle = '#A0A0B0';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('人物分析报告', 300, 60);
+
+      ctx.font = 'bold 36px sans-serif';
+      const nickname = currentResult.nickname;
+      const nicknameGradient = ctx.createLinearGradient(200, 90, 400, 90);
+      nicknameGradient.addColorStop(0, '#6366F1');
+      nicknameGradient.addColorStop(0.5, '#EC4899');
+      nicknameGradient.addColorStop(1, '#F59E0B');
+      ctx.fillStyle = nicknameGradient;
+      ctx.fillText(`「${nickname}」`, 300, 100);
+
+      // Animal
+      ctx.font = '120px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(ANIMALS[currentResult.animal]?.emoji || '🦄', 300, 250);
+
+      // Animal name
+      ctx.font = '14px sans-serif';
+      ctx.fillStyle = '#A0A0B0';
+      ctx.fillText(currentResult.animal, 300, 290);
+
+      // Description
+      ctx.font = '16px sans-serif';
+      ctx.fillStyle = '#D0D0E0';
+      const lines = wrapText(ctx, currentResult.description, 480);
+      lines.forEach((line, i) => {
+        ctx.fillText(line, 300, 360 + i * 26);
+      });
+
+      // Traits
+      const traits = currentResult.traits;
+      const traitY = 360 + Math.ceil(currentResult.description.length / 20) * 26 + 40;
+      traits.forEach((trait, i) => {
+        const x = 80 + i * 110;
+        ctx.fillStyle = i % 2 === 0 ? 'rgba(99, 102, 241, 0.3)' : 'rgba(236, 72, 153, 0.3)';
+        ctx.strokeStyle = i % 2 === 0 ? 'rgba(99, 102, 241, 0.5)' : 'rgba(236, 72, 153, 0.5)';
+        roundRect(ctx, x, traitY, 100, 32, 16, true, true);
+        ctx.fillStyle = i % 2 === 0 ? '#A5B4FC' : '#F9A8D4';
+        ctx.font = '14px sans-serif';
+        ctx.fillText(`✦ ${trait}`, x + 50, traitY + 21);
+      });
+
+      // Footer
+      ctx.font = '12px sans-serif';
+      ctx.fillStyle = '#606060';
+      ctx.fillText('微信人设图生成器 · 仅供娱乐', 300, 760);
+
+      // Download
+      const link = document.createElement('a');
+      link.download = `人设图_${nickname}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    function wrapText(ctx, text, maxWidth) {
+      const words = text.split('');
+      const lines = [];
+      let currentLine = '';
+      
+      for (const char of words) {
+        const testLine = currentLine + char;
+        if (ctx.measureText(testLine).width > maxWidth) {
+          lines.push(currentLine);
+          currentLine = char;
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+      return lines;
+    }
+
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
+    }
+
+    // Initialize
+    updateInputStatus();
+  </script>
+</body>
+</html>
